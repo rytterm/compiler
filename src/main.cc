@@ -1,3 +1,9 @@
+#include "lexer/lexer.h"
+
+
 int main() {
-    return 0;
+    Lexer l{"/home/max/compiler/file.txt"};
+    l.print_stream();
+
+   return 0;
 }

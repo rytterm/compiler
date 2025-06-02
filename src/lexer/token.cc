@@ -1,16 +1,22 @@
 #include "token.h"
+#include <iostream>
+#include <iomanip>
 
-Token::Token(token_t type, std::string& raw, int line, int column)
-    : _type{type}, _raw{raw}, _line{line}, _column{column}
+
+Token::Token(token_t type, token_t next, std::string raw, int line)
+    : _type{type}, _next{next}, _raw{raw}, _line{line}
 {
-    ASSERT(_type    != TOKEN_ERROR);
-    ASSERT(_line    > 0);
-    ASSERT(_column  > 0);
+    ASSERT(_type >= 0);
+    ASSERT(_line >= 1);
 }
  
 
 token_t Token::type() const {
     return _type;
+}
+
+token_t Token::next() const {
+    return _next;
 }
 
 std::string Token::raw() const {
@@ -21,6 +27,7 @@ int Token::line() const {
     return _line;
 }
 
-int Token::column() const {
-    return _column;
+
+void Token::print() const {
+    std::cout << std::left << std::setw(15) << _type << std::setw(15) << _next << std::setw(15) << _raw << std::setw(15) << _line << '\n';
 }
