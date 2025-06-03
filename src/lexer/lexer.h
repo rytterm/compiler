@@ -19,8 +19,12 @@ public:
     void print_stream() const;
         
 private:
+    void _getw(int curline) const;
+
+
     std::unordered_map<std::string, token_t>    _hm;
     std::vector<Token>                          _tokens;
+    std::ifstream                               _file;
     
 
 };

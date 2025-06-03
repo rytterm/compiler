@@ -11,26 +11,30 @@ enum token_t {
     RETURN,
     IF,
     WHILE,
+
     SEMICOLON,
     COMMA,
-    WHITESPACE
+    LEFT_PAREN,
+    RIGHT_PAREN,
+
+    IDENTIFIER,
+
+    NUM_TOKENS
 };
 
 
 
 class Token {
 public:
-    Token(token_t type, token_t next, std::string raw, int line);
+    Token(token_t type, std::string raw, int line);
 
     token_t     type()      const;
-    token_t     next()      const;
     std::string raw()       const;
     int         line()      const;
     void        print()     const;
 
 private:
     token_t         _type;
-    token_t         _next;
     std::string     _raw;
     int             _line;
 };

@@ -6,22 +6,40 @@ Lexer::Lexer(std::string fname)
     { "return"  ,   RETURN      },
     { "if"      ,   IF          },
     { "while"   ,   WHILE       },
-    { ";"       ,   SEMICOLON   }
+    { ";"       ,   SEMICOLON   },
+    { "("       ,   LEFT_PAREN  },
+    { ")"       ,   RIGHT_PAREN },
+    { "int"     ,   IDENTIFIER  },
+    { "char"    ,   IDENTIFIER  },
+    { "string"  ,   IDENTIFIER  },
+    { "float"   ,   IDENTIFIER  }
     }, 
-    _tokens{}
+    _tokens{}, _file(fname)
 {
 
-    std::ifstream ifs(fname);
-    std::string line;
-    int curline{0};
+    ASSERT(_file, fname, " could not be opened");
 
-    while (std::getline(ifs, line)) {
-        curline++;
+/*    std::istringstream iss(_file);
+    std::string word;
+    char cur;
+    int curline;
+
+
+    while (iss.get(cur)) {
+        if (cur == '\n')
+            curline++;
         
-        std::istringstream iss(line);
+        if (_hm.count(cur)) {
+            _tokens.push_back(Token{_hm[cur], cur, curline});
+        }
+        else if (std::isalpha(cur)) {
+            word += cur;
+            
+        }
+    }
 
 
-        std::transform(
+        /*std::transform(
             std::istream_iterator<std::string>(iss),
             std::istream_iterator<std::string>(),
             std::back_inserter(_tokens),
@@ -37,15 +55,19 @@ Lexer::Lexer(std::string fname)
 
                 return Token{TOKEN_ERROR, TOKEN_ERROR, word, curline};
             }
-        );
-    }
+        );*/
+
+}
+
+
+void Lexer::_getw(int curline) const {
 
 }
 
 
 void Lexer::print_stream() const {
     std::cout << "---------------------------------------------------\n";
-    std::cout << std::left << std::setw(15) << "TOKEN:" << std::setw(15) << "EOW:" << std::setw(15) << "RAW:" << "LINE:\n";
+    std::cout << std::left << std::setw(15) << "TOKEN:" << std::setw(15) << "RAW:" << "LINE:\n";
     std::for_each(_tokens.begin(), _tokens.end(), 
                   [](Token const& token){
                         token.print();
