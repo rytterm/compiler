@@ -1,8 +1,8 @@
 #include "lexer.h"
 #include <iomanip>
 
-Lexer::Lexer(std::string fname) 
-    : _hm {
+Lexer::Lexer(std::string const& fname) 
+    : hm_ {
     { "return"  ,   RETURN      },
     { "if"      ,   IF          },
     { "while"   ,   WHILE       },
@@ -14,29 +14,22 @@ Lexer::Lexer(std::string fname)
     { "string"  ,   IDENTIFIER  },
     { "float"   ,   IDENTIFIER  }
     }, 
-    _tokens{}, _file(fname)
+    tokens_{}, pos_{}, line_{1}, column_{1}
 {
 
-    ASSERT(_file, fname, " could not be opened");
+    std::ifstream file(fname);
 
-/*    std::istringstream iss(_file);
-    std::string word;
-    char cur;
-    int curline;
+    if (!file) PANIC("File ", fname, " could not be opened");
 
 
-    while (iss.get(cur)) {
-        if (cur == '\n')
-            curline++;
-        
-        if (_hm.count(cur)) {
-            _tokens.push_back(Token{_hm[cur], cur, curline});
-        }
-        else if (std::isalpha(cur)) {
-            word += cur;
-            
-        }
-    }
+    std::string stream_((std::istreambuf_iterator<char>(file)),
+                         std::istreambuf_iterator<char>());
+    
+
+    ASSERT(stream_.size() > 0);
+
+
+
 
 
         /*std::transform(
@@ -60,15 +53,64 @@ Lexer::Lexer(std::string fname)
 }
 
 
-void Lexer::_getw(int curline) const {
+char Lexer::peek_() const {
+    return pos_ < stream_.size() ? stream_[pos_] : '\0';
+}
+
+
+char Lexer::get_() {
+
+    char c{peek_()};
+
+    if (c == '\0') return c;
+
+    pos_++;
+
+    if (c == '\n') {
+        line_++;
+        column_ = 1;
+    }
+    else column_++;
+
+    return c;
+}
+
+
+void Lexer::skip_() {
+    while (true) {
+        char c = peek_();
+
+        switch(c) {
+            case ' ':
+            case '\t':
+            case '\r':
+                get_();
+                break;
+            case '\':
+                get_();
+                if (peek_() == '\')
+                    while (peek_() != '\0' && peek_() != '\n')
+                        get_();
+            default:
+                return;
+        }
+    }
+}
+
+
+Token Lexer::next_() {
+    skip_();
+
 
 }
+
+
 
 
 void Lexer::print_stream() const {
     std::cout << "---------------------------------------------------\n";
     std::cout << std::left << std::setw(15) << "TOKEN:" << std::setw(15) << "RAW:" << "LINE:\n";
-    std::for_each(_tokens.begin(), _tokens.end(), 
+    std::for_each(tokens_.begin(), tokens_.end(), 
                   [](Token const& token){
                         token.print();
                   });
